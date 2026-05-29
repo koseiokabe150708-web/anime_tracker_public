@@ -81,11 +81,14 @@ function App() {
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Title"
   />
-        <input
-        value={content}
-        onChange={(e) => setContent(e.target.value)}
-        placeholder="Content Type"
-  />
+        <select 
+        value={content} 
+        onChange={(e) => setContent(e.target.value)}>
+          {["ANIME_SHOW", "MOVIE"].map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+            ))}
+        </select>
+
         <input
         type = "number"
         value={storyNumber}
@@ -104,16 +107,22 @@ function App() {
         onChange={(e) => setNegativeScore(e.target.value)}
         placeholder="Negative score"
   />
-        <input
-        value={opponent}
-        onChange={(e) => setOpponent(e.target.value)}
-        placeholder="Opponent"
-  />
-        <input
-        value={rokuyo}
-        onChange={(e) => setRokuyo(e.target.value)}
-        placeholder="Rokuyo"
-  />
+        <select 
+        value={opponent} 
+        onChange={(e) => setOpponent(e.target.value)}>
+          {["Y", "C", "H", "G", "H"].map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+            ))}
+        </select>
+
+        <select 
+        value={rokuyo} 
+        onChange={(e) => setRokuyo(e.target.value)}>
+          {["大安", "仏滅", "先負", "先勝", "赤口", "友引"].map((opt) => (
+            <option key={opt} value={opt}>{opt}</option>
+            ))}
+        </select>
+
         <input
         value={notes}
         onChange={(e) => setNotes(e.target.value)}
