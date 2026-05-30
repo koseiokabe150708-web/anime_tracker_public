@@ -80,13 +80,15 @@ function App() {
       {error && <p style={{ color: "red" }}>{error}</p>}
       {loading && <p>Saving...</p>}
 
-      {years.map((y) => (<button key={y} onClick={() => setYear(y)}>{y}</button>))}
+      <div>
+        {years.map((y) => (<button key={y} onClick={() => setYear(y)}>{y}</button>))}
+      </div>
 
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
         placeholder="Title"
-  />
+/>
         <select 
         value={content} 
         onChange={(e) => setContent(e.target.value)}>
