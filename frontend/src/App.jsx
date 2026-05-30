@@ -16,6 +16,10 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
+  const [year, setYear] = useState("all");
+  const filteredAnime = year === "all" ? animeList : animeList.filter((anime) => new Date(anime.anime_date).getFullYear() === year)
+
   useEffect(() => {
     fetch("http://127.0.0.1:8000/anime")
       .then((res) => res.json())
@@ -75,6 +79,8 @@ function App() {
 
       {error && <p style={{ color: "red" }}>{error}</p>}
       {loading && <p>Saving...</p>}
+
+      {years.map((y) => (<button key={y} onClick={() => setYear(y)}>{y}</button>))}
 
       <input
         value={title}
@@ -150,10 +156,11 @@ function App() {
   />
         <button onClick={handleAddAnime}>Add Anime</button>
 
-      {animeList.map((anime) => (
+      {filteredAnime.map((anime) => (
         <div key={anime.anime_id} style={{ border: "1px solid #ccc", padding: "10px", margin: "10px", borderRadius: "8px" }}>
           <h3>{anime.story_number}</h3>
           <p>{anime.title}</p>
+          <p>{anime.anime_date}</p>
           <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
         </div>
       ))}
