@@ -5,8 +5,17 @@ from fastapi import FastAPI, Depends, HTTPException
 
 from database import get_db
 from schemas import AnimeCreate
+from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.get("/")
 def root():
