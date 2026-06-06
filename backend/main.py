@@ -28,7 +28,7 @@ def test_db(db: Session = Depends(get_db)):
 
 @app.get("/anime")
 def get_anime(db: Session = Depends(get_db)):
-    rows = db.execute(text("SELECT * FROM anime ORDER by story_number")).fetchall()
+    rows = db.execute(text("SELECT * FROM anime ORDER by anime_date")).fetchall()
     return [dict(row._mapping) for row in rows]
 
 @app.post("/anime")
@@ -40,11 +40,14 @@ def add_anime(payload: AnimeCreate, db: Session = Depends(get_db)):
                 content_type,
                 title,
                 story_number,
+                alphabet,
                 positive_score,
                 negative_score,
                 opponent,
                 rokuyo,
                 notes,
+                script_writer,
+                animation_director,
                 anime_date,
                 character_appear,
                 watch_status
@@ -53,11 +56,14 @@ def add_anime(payload: AnimeCreate, db: Session = Depends(get_db)):
                 :content_type,
                 :title,
                 :story_number,
+                :alphabet,
                 :positive_score,
                 :negative_score,
                 :opponent,
                 :rokuyo,
                 :notes,
+                :script_writer,
+                :animation_director,
                 :anime_date,
                 :character_appear,
                 :watch_status
@@ -70,15 +76,15 @@ def add_anime(payload: AnimeCreate, db: Session = Depends(get_db)):
 
     return {"message": "Anime added successfully"}
 
-@app.get("/anime/{story_number}")
-def get_anime_by_story(story_number: int, db: Session = Depends(get_db)):
+@app.get("/anime/{anime_id}")
+def get_anime_by_story(anime_id: int, db: Session = Depends(get_db)):
     row = db.execute(
         text(f"""
             SELECT * 
             FROM anime
-            WHERE story_number = :story_number
+            WHERE anime_id = :anime_id
         """),
-        {"story_number": story_number},
+        {"anime_id": anime_id},
     ).mappings().fetchone()
                 
     if not row:
@@ -86,9 +92,9 @@ def get_anime_by_story(story_number: int, db: Session = Depends(get_db)):
     
     return dict(row)
 
-@app.put("/anime/{story_number}")
+@app.put("/anime/{anime_id}")
 def update_anime(
-    story_number: int,
+    anime_id: int,
     payload: AnimeCreate,
     db: Session = Depends(get_db)
 ):
@@ -97,20 +103,24 @@ def update_anime(
             UPDATE anime
             SET
                 content_type = :content_type,
+                story_number = :story_number,
+                alphabet = :alphabet,
                 title = :title,
                 positive_score = :positive_score,
                 negative_score = :negative_score,
                 opponent = :opponent,
                 rokuyo = :rokuyo,
                 notes = :notes,
+                script_writer = :script_writer,
+                animation_director = :animation_director,
                 anime_date = :anime_date,
                 character_appear = :character_appear,
                 watch_status = :watch_status
-            WHERE story_number = :story_number
+            WHERE anime_id = :anime_id
         """),
         {
             **payload.model_dump(),
-            "story_number": story_number
+            "anime_id": anime_id
         }
     )
 
