@@ -28,7 +28,7 @@ def test_db(db: Session = Depends(get_db)):
 
 @app.get("/anime")
 def get_anime(db: Session = Depends(get_db)):
-    rows = db.execute(text("SELECT * FROM anime ORDER by anime_date")).fetchall()
+    rows = db.execute(text("SELECT * FROM anime ORDER by anime_date, alphabet")).fetchall()
     return [dict(row._mapping) for row in rows]
 
 @app.post("/anime")
