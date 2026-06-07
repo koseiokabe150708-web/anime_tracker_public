@@ -104,6 +104,11 @@ def update_anime(
     payload: AnimeCreate,
     db: Session = Depends(get_db)
 ):
+
+    lunar = LunarDate.fromSolarDate(payload.anime_date.year, payload.anime_date.month, payload.anime_date.day)
+    rokuyo_list = ["大安", "赤口", "先勝", "友引", "先負", "仏滅"]
+    rokuyo = rokuyo_list[(lunar.month + lunar.day) % 6]
+
     result = db.execute(
         text("""
             UPDATE anime
@@ -126,7 +131,8 @@ def update_anime(
         """),
         {
             **payload.model_dump(),
-            "anime_id": anime_id
+            "anime_id": anime_id,
+            "rokuyo": rokuyo
         }
     )
 

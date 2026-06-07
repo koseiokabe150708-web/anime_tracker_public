@@ -9,7 +9,6 @@ class AnimeCreate(BaseModel):
     positive_score: int
     negative_score: int
     opponent: str | None = None
-    rokuyo: str | None = None
     notes: str | None = None
     script_writer: str | None = None
     animation_director: str | None = None
