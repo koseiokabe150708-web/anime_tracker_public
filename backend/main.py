@@ -3,6 +3,8 @@ from sqlalchemy import text
 from sqlalchemy.orm import Session
 from fastapi import FastAPI, Depends, HTTPException
 
+from lunardate import LunarDate
+
 from database import get_db
 from schemas import AnimeCreate
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,6 +35,10 @@ def get_anime(db: Session = Depends(get_db)):
 
 @app.post("/anime")
 def add_anime(payload: AnimeCreate, db: Session = Depends(get_db)):
+
+    lunar = LunarDate.fromSolarDate(payload.anime_date.year, payload.anime_date.month, payload.anime_date.day)
+    rokuyo_list = ["大安", "赤口", "先勝", "友引", "先負", "仏滅"]
+    rokuyo = rokuyo_list[(lunar.month + lunar.day) % 6]
 
     db.execute(
         text("""
@@ -69,7 +75,7 @@ def add_anime(payload: AnimeCreate, db: Session = Depends(get_db)):
                 :watch_status
             )
         """),
-        payload.model_dump()
+        {**payload.model_dump(), "rokuyo": rokuyo}
     )
 
     db.commit()
