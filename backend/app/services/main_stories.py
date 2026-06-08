@@ -120,3 +120,17 @@ def update_anime(
 
     return {"message": "Anime updated successfully"}
 
+def delete_anime(anime_id: int, db):
+    result = db.execute(
+        text("""
+            DELETE FROM anime WHERE anime_id = :anime_id
+        """),{"anime_id": anime_id}
+    )
+    if result.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Anime not found")
+
+    db.commit()
+
+    return {"message": "Anime deleted successfully"}
+
+

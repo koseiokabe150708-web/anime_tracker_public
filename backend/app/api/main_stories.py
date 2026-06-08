@@ -31,3 +31,7 @@ def update_anime_endpoint(
     db: Session = Depends(get_db)):
 
     return update_anime(anime_id, payload, db)
+
+@router.delete("/anime/{anime_id}")
+def delete_anime_endpoint(anime_id: int, db: Session = Depends(get_db)):
+    return delete_anime(anime_id, db)
