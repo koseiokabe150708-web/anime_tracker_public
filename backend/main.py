@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.main_stories import router
+from app.api.movies import router as movie_router
 
 app = FastAPI()
 
@@ -17,3 +18,4 @@ def root():
     return {"message": "Shin Chan Tracker API is running"}
 
 app.include_router(router)
+app.include_router(movie_router)
