@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from app.services.main_stories import get_anime, add_anime, get_anime_by_story, update_anime
+from app.services.main_stories import get_anime, add_anime, get_anime_by_story, update_anime, delete_anime
 from app.schemas.main_stories import AnimeCreate
 
 router = APIRouter()
