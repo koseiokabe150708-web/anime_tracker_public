@@ -6,6 +6,10 @@ from app.schemas.main_stories import AnimeCreate
 
 router = APIRouter()
 
+router = APIRouter(
+    tags=["anime"]
+)
+
 @router.get("/anime")
 def get_anime_endpoint(db: Session = Depends(get_db)):
     return get_anime(db)
