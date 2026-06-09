@@ -41,6 +41,60 @@ function Summary() {
             positive_per_nine_episodes_t: (pos *9/(character.length)).toFixed(2), 
             negative_per_nine_episodes_t: (neg *9/(character.length)).toFixed(2)}
 })
+    
+    const totalPos = rows.reduce((sum, r) => sum + Number(r.positive), 0)
+    const totalNeg = rows.reduce((sum, r) => sum + Number(r.negative), 0)
+    const totalEp = rows.reduce((sum, r) => sum + Number(r.episodes), 0)
+    const totalChar = rows.reduce((sum, r) => sum + Number(r.episodes_character), 0)
+
+    const totalRow = {id: "total", year: "Total", positive: totalPos,
+        negative: totalNeg,
+        win: rows.reduce((sum, r) => sum + Number(r.win), 0),
+        lose: rows.reduce((sum, r) => sum + Number(r.lose), 0),
+        total: rows.reduce((sum, r) => sum + Number(r.total), 0),
+        episodes: totalEp,
+        episodes_character: totalChar,
+        positive_per_nine_episodes: (totalPos * 9 / totalEp).toFixed(2),
+        negative_per_nine_episodes: (totalNeg * 9 / totalEp).toFixed(2),
+        positive_per_nine_episodes_t: (totalPos * 9 / totalChar).toFixed(2),
+        negative_per_nine_episodes_t: (totalNeg * 9 / totalChar).toFixed(2),
+}
+    
+    const filteredRows2017 = rows.filter(r => Number(r.year) >= 2017)
+    const totalPos2017 = filteredRows2017.reduce((sum, r) => sum + Number(r.positive), 0)
+    const totalNeg2017 = filteredRows2017.reduce((sum, r) => sum + Number(r.negative), 0)
+    const totalEp2017 = filteredRows2017.reduce((sum, r) => sum + Number(r.episodes), 0)
+    const totalChar2017 = filteredRows2017.reduce((sum, r) => sum + Number(r.episodes_character), 0)
+    const totalRow2017 = {id: "total 2017", year: "Total 2017", positive: totalPos2017,
+        negative: totalNeg2017,
+        win: rows.reduce((sum, r) => sum + Number(r.win), 0),
+        lose: rows.reduce((sum, r) => sum + Number(r.lose), 0),
+        total: rows.reduce((sum, r) => sum + Number(r.total), 0),
+        episodes: totalEp,
+        episodes_character: totalChar,
+        positive_per_nine_episodes: (totalPos2017 * 9 / totalEp2017).toFixed(2),
+        negative_per_nine_episodes: (totalNeg2017 * 9 / totalEp2017).toFixed(2),
+        positive_per_nine_episodes_t: (totalPos2017 * 9 / totalChar2017).toFixed(2),
+        negative_per_nine_episodes_t: (totalNeg2017 * 9 / totalChar2017).toFixed(2),
+}
+
+    const filteredRows2022 = rows.filter(r => Number(r.year) >= 2022)
+    const totalPos2022 = filteredRows2022.reduce((sum, r) => sum + Number(r.positive), 0)
+    const totalNeg2022 = filteredRows2022.reduce((sum, r) => sum + Number(r.negative), 0)
+    const totalEp2022 = filteredRows2022.reduce((sum, r) => sum + Number(r.episodes), 0)
+    const totalChar2022 = filteredRows2022.reduce((sum, r) => sum + Number(r.episodes_character), 0)
+    const totalRow2022 = {id: "total 2022", year: "Total 2022", positive: totalPos2022,
+        negative: totalNeg2022,
+        win: rows.reduce((sum, r) => sum + Number(r.win), 0),
+        lose: rows.reduce((sum, r) => sum + Number(r.lose), 0),
+        total: rows.reduce((sum, r) => sum + Number(r.total), 0),
+        episodes: totalEp,
+        episodes_character: totalChar,
+        positive_per_nine_episodes: (totalPos2022 * 9 / totalEp2022).toFixed(2),
+        negative_per_nine_episodes: (totalNeg2022 * 9 / totalEp2022).toFixed(2),
+        positive_per_nine_episodes_t: (totalPos2022 * 9 / totalChar2022).toFixed(2),
+        negative_per_nine_episodes_t: (totalNeg2022 * 9 / totalChar2022).toFixed(2),
+}
 
 
 return (
@@ -51,8 +105,8 @@ return (
 
         <div style={{ height: 600 }}>
             <DataGrid
-                rows={rows}
-                columns={columns}
+            rows={animeList.length > 0 ? [...rows, totalRow, totalRow2017, totalRow2022] : []}
+            columns={columns}
                 initialState={{
                     pagination: { paginationModel: { pageSize: 100 } },
                 }}

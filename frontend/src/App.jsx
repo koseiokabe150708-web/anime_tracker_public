@@ -34,7 +34,7 @@ function App() {
   const [monthOption, setMonthOption] = useState("all");
   const filteredAnimemonth = monthOption === "all" ? filteredAnime : filteredAnime.filter((anime) => new Date(anime.anime_date).getMonth() + 1 === monthOption)
 
-  const rokuyoOptions = ["all", "不明", "大安", "仏滅", "先負", "先勝", "赤口", "友引"]
+  const rokuyoOptions = ["all", "大安", "仏滅", "先負", "先勝", "赤口", "友引"]
   const [rokuyoOption, setRokuyoOption] = useState("all");
   const filteredAnimerokuyo = rokuyoOption === "all" ? filteredAnime : filteredAnime.filter((anime) => anime.rokuyo === rokuyoOption)
 

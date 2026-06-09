@@ -50,6 +50,7 @@ function By_category(){
   width: "200px",
   textAlign: "center"
 }}>Summary by month</Link>
+
       </div>
     </Layout>
   )
