@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom'
 import { DataGrid } from "@mui/x-data-grid";
 import Layout from "./Layout"
 
@@ -50,7 +49,6 @@ return (
         <Layout>
             <div style={{ padding: 24 }}>
             <h1 style={{ color: "#1a1a1a" }}>Summary Script writer</h1>
-            <Link to="/">Go to Main</Link>
         <button onClick={() => setCharacterAppearOption("all")}>All</button>
         <button onClick={() => setCharacterAppearOption("得点圏")}>得点圏～</button>    
         <button onClick={() => setPeriod("all")}>All</button>
