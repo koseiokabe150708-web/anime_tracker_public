@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom'
 import Layout from "./Layout"
 
 function Summary_script_year() {
@@ -18,7 +17,6 @@ function Summary_script_year() {
     <Layout>
       <div>
         <h1>Script Writer by Year</h1>
-        <Link to="/">Go to Main</Link>
         {years.map((y) => (
           <div key={y}>
               <h2>{y}</h2>

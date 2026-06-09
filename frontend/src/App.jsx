@@ -27,7 +27,10 @@ function App() {
   const [year, setYear] = useState("all");
   const filteredAnime = year === "all" ? filteredCharacterAppear : filteredCharacterAppear.filter((anime) => new Date(anime.anime_date).getFullYear() === year)
 
-  const monthOptions = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getMonth() + 1))]
+  const monthOptions = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getMonth() + 1))].sort((a, b) => {
+  if (a === "all") return -1;
+  return a - b;
+})
   const [monthOption, setMonthOption] = useState("all");
   const filteredAnimemonth = monthOption === "all" ? filteredAnime : filteredAnime.filter((anime) => new Date(anime.anime_date).getMonth() + 1 === monthOption)
 
@@ -179,6 +182,26 @@ function App() {
   }
 }
 
+  async function handleDelete(anime_id){
+    try {
+      setLoading(true);
+      setError("");
+      
+      await fetch(`http://127.0.0.1:8000/anime/${anime_id}`, {
+        method: "DELETE",
+      });
+
+      const res = await fetch("http://127.0.0.1:8000/anime");
+      const data = await res.json();
+      setAnimeList(data);
+
+    } catch (err) {
+      setError("Failed to delete anime");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <Layout>
       <div>
@@ -293,6 +316,7 @@ function App() {
               <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
               <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
               <button onClick={() => handleEdit(anime)}>Edit</button>
+              <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
             </div>)
   })}
       </div>
@@ -313,6 +337,7 @@ function App() {
               <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
               <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
               <button onClick={() => handleEdit(anime)}>Edit</button>
+              <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
             </div>)
   })}
       </div>
@@ -334,6 +359,7 @@ function App() {
               <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
               <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
               <button onClick={() => handleEdit(anime)}>Edit</button>
+              <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
             </div>)
   })}
       </div>
@@ -355,6 +381,7 @@ function App() {
               <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
               <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
               <button onClick={() => handleEdit(anime)}>Edit</button>
+              <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
             </div>)
   })}
       </div>
