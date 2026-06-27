@@ -50,6 +50,17 @@ function By_category(){
   width: "200px",
   textAlign: "center"
 }}>Summary by month</Link>
+<Link to="/summary_month_year" style={{ 
+  display: "block",
+  padding: "12px 24px",
+  margin: "8px 0",
+  backgroundColor: "#2e404eff",
+  color: "white",
+  borderRadius: "8px",
+  textDecoration: "none",
+  width: "200px",
+  textAlign: "center"
+}}>Summary by month by year</Link>
 
       </div>
     </Layout>

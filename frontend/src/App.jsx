@@ -3,29 +3,20 @@ import Layout from "./Layout"
 
 function App() {
   const [animeList, setAnimeList] = useState([]);
-  const [content, setContent] = useState("ANIME_SHOW");
   const [title, setTitle] = useState("");
-  const [storyNumber, setStoryNumber] = useState("");
-  const [alphabet, setAlphabet] = useState("");
-  const [positiveScore, setPositiveScore] = useState(0);
-  const [negativeScore, setNegativeScore] = useState(0);
-  const [opponent, setOpponent] = useState("");
+  const [episodeNumber, setEpisodeNumber] = useState("");
   const [notes, setNotes] = useState("");
   const [scriptwriter, setScriptWriter] = useState("");
   const [animedirector, setAnimeDirector] = useState("");
   const [date, setDate] = useState("");
-  const [character_appear, setCharacter_appear] = useState(true);
   const [watchStatus, setWatchStatus] = useState("WATCHED");
+  const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const characterappearOptions = ["all", "得点圏"]
-  const [characterappearOption, setCharacterAppearOption] = useState("all");
-  const filteredCharacterAppear = characterappearOption === "all" ? animeList : animeList.filter((anime) => anime.character_appear === true)
-
   const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
   const [year, setYear] = useState("all");
-  const filteredAnime = year === "all" ? filteredCharacterAppear : filteredCharacterAppear.filter((anime) => new Date(anime.anime_date).getFullYear() === year)
+  const filteredAnime = year === "all" ? animeList : animeList.filter((anime) => new Date(anime.anime_date).getFullYear() === year)
 
   const monthOptions = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getMonth() + 1))].sort((a, b) => {
   if (a === "all") return -1;
@@ -34,11 +25,7 @@ function App() {
   const [monthOption, setMonthOption] = useState("all");
   const filteredAnimemonth = monthOption === "all" ? filteredAnime : filteredAnime.filter((anime) => new Date(anime.anime_date).getMonth() + 1 === monthOption)
 
-  const rokuyoOptions = ["all", "大安", "仏滅", "先負", "先勝", "赤口", "友引"]
-  const [rokuyoOption, setRokuyoOption] = useState("all");
-  const filteredAnimerokuyo = rokuyoOption === "all" ? filteredAnime : filteredAnime.filter((anime) => anime.rokuyo === rokuyoOption)
-
-  const scriptwriterOptions = ["all", "不明", "黒住光", "ひるまちかこ", "中弘子", "晨原大輔", "阪口和久", "モラル", "川辺美奈子", "清水東", "翁妙子", "筧昌也", "待田堂子"]
+  const scriptwriterOptions = ["all", "不明", "黒住光", "ひるまちかこ", "中弘子", "晨原大輔", "阪口和久", "モラル", "川辺美奈子", "清水東", "翁妙子", "ムトウユージ", "うえのきみこ", "筧昌也", "待田堂子", "永野たかひろ"]
   const [scriptwriterOption, setScriptWriterOption] = useState("all");
   const filteredAnimescript = scriptwriterOption === "all" ? filteredAnime : filteredAnime.filter((anime) => anime.script_writer === scriptwriterOption)
 
@@ -59,18 +46,13 @@ function App() {
       setError("");
 
       const payload = {
-        content_type: content,
         title: title,
-        story_number: Number(storyNumber),
-        alphabet: alphabet,
-        positive_score: Number(positiveScore),
-        negative_score: Number(negativeScore),
-        opponent: opponent,
+        episode_number: Number(episodeNumber),
         notes: notes,
         script_writer: scriptwriter,
-        animation_director: animedirector,
+        anime_director: animedirector,
         anime_date: date,
-        character_appear: character_appear,
+        rating: rating,
         watch_status: watchStatus,
       };
 
@@ -85,16 +67,12 @@ function App() {
       setAnimeList(data);
 
       setTitle("");
-      setStoryNumber("");
-      setAlphabet("");
-      setPositiveScore(0);
-      setNegativeScore(0);
-      setOpponent("");
+      setEpisodeNumber("");
       setNotes("");
       setScriptWriter("");
       setAnimeDirector("");
       setDate("");
-      setCharacter_appear(true);
+      setRating(0);
       setWatchStatus("WATCHED");
 
     } catch (err) {
@@ -107,17 +85,13 @@ function App() {
   async function handleEdit(anime){
     console.log("anime object:", anime)
     setTitle(anime.title || "");
-    setStoryNumber(anime.story_number);
-    setAlphabet(anime.alphabet);
-    setPositiveScore(anime.positive_score);
-    setNegativeScore(anime.negative_score);
-    setOpponent(anime.opponent || "");
+    setEpisodeNumber(anime.episode_number);
     setNotes(anime.notes || "");
     setScriptWriter(anime.script_writer || "")
-    setAnimeDirector(anime.animation_director || "");
+    setAnimeDirector(anime.anime_director || "");
     setDate(anime.anime_date);
-    setCharacter_appear(anime.character_appear ?? true);
     setWatchStatus(anime.watch_status || "");
+    setRating(anime.rating || 0);
     setEditingAnime(anime)
   }
 
@@ -128,18 +102,13 @@ function App() {
     setError("");
 
     const payload = {
-      content_type: content,
       title: title,
-      story_number: Number(storyNumber),
-      alphabet: alphabet,
-      positive_score: Number(positiveScore),
-      negative_score: Number(negativeScore),
-      opponent: opponent,
+      episode_number: Number(episodeNumber),
       notes: notes,
       script_writer: scriptwriter,
-      animation_director: animedirector,
+      anime_director: animedirector,
       anime_date: date,
-      character_appear: character_appear,
+      rating: rating,
       watch_status: watchStatus,
     };
 
@@ -162,17 +131,13 @@ function App() {
     setAnimeList(data);
 
     setTitle("");
-    setStoryNumber("");
-    setAlphabet("");
-    setPositiveScore(0);
-    setNegativeScore(0);
-    setOpponent("");
+    setEpisodeNumber("");
     setNotes("");
     setScriptWriter("");
     setAnimeDirector("");
     setDate("");
-    setCharacter_appear(true);
     setWatchStatus("WATCHED");
+    setRating(0);
     setEditingAnime(null);
 
   } catch (err) {
@@ -210,19 +175,9 @@ function App() {
         {error && <p style={{ color: "red" }}>{error}</p>}
         {loading && <p>Saving...</p>}
 
-        <div style={{ textAlign: 'right' }}>
-          {characterappearOptions.map((c) => (<button key={String(c)} onClick={() => setCharacterAppearOption(c)}>{c === "all" ? "全て" : "得点圏"}
-    </button>
-  ))}
-        </div>
-
-
 
 <div style={{ textAlign: 'right' }}>
   {years.map((y) => (<button key={y} onClick={() => { setYear(y); setActiveFilter("year"); }}>{y}</button>))}
-</div>
-<div style={{ textAlign: 'right' }}>
-  {rokuyoOptions.map((r) => (<button key={r} onClick={() => { setRokuyoOption(r); setActiveFilter("rokuyo"); }}>{r}</button>))}
 </div>
 <div style={{ textAlign: 'right' }}>
   {scriptwriterOptions.map((s) => (<button key={s} onClick={() => { setScriptWriterOption(s); setActiveFilter("script_writer"); }}>{s}</button>))}
@@ -237,45 +192,19 @@ function App() {
     <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>コンテンツ</label>
-    <select value={content} onChange={(e) => setContent(e.target.value)}>
-      {["ANIME_SHOW","SHORT", "SPECIAL"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
-    </select>
-  </div>
-  <div style={{ display: "flex", flexDirection: "column" }}>
     <label style={{ color: "black" }}>話数</label>
-    <input type="number" value={storyNumber} onChange={(e) => setStoryNumber(e.target.value)} placeholder="Story number" style={{ width: "80px" }}/>
-  </div>
-  <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>アルファベット</label>
-    <select value={alphabet} onChange={(e) => setAlphabet(e.target.value)}>
-      {["不明", "a","b", "c", "d", "e", "f"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
-    </select>
-  </div>
-  <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>得点</label>
-    <input type="number" value={positiveScore} onChange={(e) => setPositiveScore(e.target.value)} placeholder="Positive score" style={{ width: "60px" }}/>
-  </div>
-  <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>失点</label>
-    <input type="number" value={negativeScore} onChange={(e) => setNegativeScore(e.target.value)} placeholder="Negative score" style={{ width: "60px" }}/>
-  </div>
-  <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>対戦相手</label>
-    <select value={opponent} onChange={(e) => setOpponent(e.target.value)}>
-      {["不明","水道橋", "名古屋", "兵庫", "外苑前", "広島"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
-    </select>
+    <input type="number" value={episodeNumber} onChange={(e) => setEpisodeNumber(e.target.value)} placeholder="Episode number" style={{ width: "80px" }}/>
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
     <label style={{ color: "black" }}>脚本</label>
     <select value={scriptwriter} onChange={(e) => setScriptWriter(e.target.value)}>
-      {["不明", "黒住光", "ひるまちかこ", "中弘子", "晨原大輔", "阪口和久", "モラル", "川辺美奈子", "清水東", "翁妙子", "筧昌也", "待田堂子"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+      {["", "不明", "黒住光", "ひるまちかこ", "中弘子", "晨原大輔", "阪口和久", "モラル", "川辺美奈子", "清水東", "翁妙子", "ムトウユージ", "うえのきみこ", "筧昌也", "待田堂子", "永野たかひろ"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
     </select>
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
     <label style={{ color: "black" }}>作画監督</label>
     <select value={animedirector} onChange={(e) => setAnimeDirector(e.target.value)}>
-      {["不明", "木村優子", "間々田益子", "原勝徳", "門脇孝一", "入江康智", "針金屋英郎", "林静香", "大森孝敏", "樋口善法", "高倉佳彦", "橋本とよ子", "海老原尚樹", "尾鷲英俊"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+      {["", "不明", "木村優子", "間々田益子", "原勝徳", "門脇孝一", "入江康智", "針金屋英郎", "林静香", "大森孝敏", "樋口善法", "高倉佳彦", "橋本とよ子", "海老原尚樹", "尾鷲英俊"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
     </select>
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
@@ -287,8 +216,8 @@ function App() {
     <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Notes" />
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>得点圏</label>
-    <input type="checkbox" checked={character_appear} onChange={(e) => setCharacter_appear(e.target.checked)} />
+    <label style={{ color: "black" }}>評価</label>
+    <input value={rating} onChange={(e) => setRating(e.target.value)} placeholder="Ratings" />
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
     <label style={{ color: "black" }}>視聴状況</label>
@@ -304,17 +233,15 @@ function App() {
         {activeFilter === "year" && (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       {filteredAnime.map((anime) => {
-        const borderColor = anime.positive_score > anime.negative_score ? "blue" : anime.negative_score > anime.positive_score ? "#E70012" : "#00a051"
-        const bgColor = anime.positive_score > anime.negative_score ? "#004583" : anime.negative_score > anime.positive_score ? "#BF0000" : "green"
+        const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
+        const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.story_number} {anime.alphabet}</h2>
+            <h2>{anime.episode_number}</h2>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>
-              <p>作画監督：{anime.animation_director}</p>
-              <p>六曜：{anime.rokuyo}</p>
-              <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
-              <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
+              <p>作画監督：{anime.anime_director}</p>
+              <p>評価：{anime.rating}</p>
               <button onClick={() => handleEdit(anime)}>Edit</button>
               <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
             </div>)
@@ -322,42 +249,20 @@ function App() {
       </div>
   )}
             
-        {activeFilter === "rokuyo" && (
-    <div style={{ display: "flex", flexWrap: "wrap" }}>
-      {filteredAnimerokuyo.map((anime) => {
-        const borderColor = anime.positive_score > anime.negative_score ? "blue" : anime.negative_score > anime.positive_score ? "#E70012" : "#00a051"
-        const bgColor = anime.positive_score > anime.negative_score ? "#004583" : anime.negative_score > anime.positive_score ? "#BF0000" : "green"
-          return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.story_number} {anime.alphabet}</h2>
-              <p>タイトル：{anime.title}</p>
-              <p>日付：{anime.anime_date}</p>
-              <p>脚本：{anime.script_writer}</p>
-              <p>作画監督：{anime.animation_director}</p>
-              <p>六曜：{anime.rokuyo}</p>
-              <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
-              <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
-              <button onClick={() => handleEdit(anime)}>Edit</button>
-              <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
-            </div>)
-  })}
-      </div>
-  )}
 
 
         {activeFilter === "script_writer" && (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       {filteredAnimescript.map((anime) => {
-        const borderColor = anime.positive_score > anime.negative_score ? "blue" : anime.negative_score > anime.positive_score ? "#E70012" : "#00a051"
-        const bgColor = anime.positive_score > anime.negative_score ? "#004583" : anime.negative_score > anime.positive_score ? "#BF0000" : "green"
+        const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
+        const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.story_number} {anime.alphabet}</h2>
+            <h2>{anime.episode_number}</h2>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>
-              <p>作画監督：{anime.animation_director}</p>
-              <p>六曜：{anime.rokuyo}</p>
-              <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
-              <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
+              <p>作画監督：{anime.anime_director}</p>
+              <p>評価：{anime.rating}</p>
               <button onClick={() => handleEdit(anime)}>Edit</button>
               <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
             </div>)
@@ -369,17 +274,15 @@ function App() {
         {activeFilter === "month" && (
     <div style={{ display: "flex", flexWrap: "wrap" }}>
       {filteredAnimemonth.map((anime) => {
-        const borderColor = anime.positive_score > anime.negative_score ? "blue" : anime.negative_score > anime.positive_score ? "#E70012" : "#00a051"
-        const bgColor = anime.positive_score > anime.negative_score ? "#004583" : anime.negative_score > anime.positive_score ? "#BF0000" : "green"
+        const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
+        const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.story_number} {anime.alphabet}</h2>
+            <h2>{anime.episode_number}</h2>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>
-              <p>作画監督：{anime.animation_director}</p>
-              <p>六曜：{anime.rokuyo}</p>
-              <p>得点圏：{anime.character_appear ? "あり" : "なし"}</p>
-              <p>Score: +{anime.positive_score} / -{anime.negative_score}</p>
+              <p>作画監督：{anime.anime_director}</p>
+              <p>評価：{anime.rating}</p>
               <button onClick={() => handleEdit(anime)}>Edit</button>
               <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
             </div>)

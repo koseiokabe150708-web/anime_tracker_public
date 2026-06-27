@@ -10,6 +10,9 @@ function Summary() {
     const [characterappearOption, setCharacterAppearOption] = useState("all");
     const filteredCharacterAppear = characterappearOption === "all" ? animeList : animeList.filter((anime) => anime.character_appear === true)
 
+    const [shortfilterOption, setShortFilterOption] = useState("all");
+    const filteredshort = shortfilterOption === 'all' ? filteredCharacterAppear : filteredCharacterAppear.filter((anime) => anime.content_type !== "SHORT")
+
     useEffect(() => {
     fetch("http://127.0.0.1:8000/anime")
       .then((res) => res.json())
@@ -29,11 +32,11 @@ function Summary() {
   ];
   
     const rows = years.map((y) => {
-        const entries = filteredCharacterAppear.filter((anime) => new Date(anime.anime_date).getFullYear() === y)
+        const entries = filteredshort.filter((anime) => new Date(anime.anime_date).getFullYear() === y)
         const pos = entries.reduce((total, anime) => total + anime.positive_score, 0)
         const neg = entries.reduce((total, anime) => total + anime.negative_score, 0)
-        const wins = filteredCharacterAppear.filter((anime) => new Date(anime.anime_date).getFullYear() === y && anime.positive_score > anime.negative_score)
-        const loses = filteredCharacterAppear.filter((anime) => new Date(anime.anime_date).getFullYear() === y && anime.positive_score < anime.negative_score)
+        const wins = filteredshort.filter((anime) => new Date(anime.anime_date).getFullYear() === y && anime.positive_score > anime.negative_score)
+        const loses = filteredshort.filter((anime) => new Date(anime.anime_date).getFullYear() === y && anime.positive_score < anime.negative_score)
         return { id: y, year: y, positive: pos, negative: neg, total: pos - neg, win: wins.length, lose: loses.length, episodes: entries.length, 
             positive_per_nine_episodes: (pos *9/(entries.length)).toFixed(2), 
             negative_per_nine_episodes: (neg *9/(entries.length)).toFixed(2)}
@@ -63,10 +66,10 @@ function Summary() {
     const totalEp2017 = filteredRows2017.reduce((sum, r) => sum + Number(r.episodes), 0)
     const totalRow2017 = {id: "total 2017", year: "Total 2017", positive: totalPos2017,
         negative: totalNeg2017,
-        win: rows.reduce((sum, r) => sum + Number(r.win), 0),
-        lose: rows.reduce((sum, r) => sum + Number(r.lose), 0),
-        total: rows.reduce((sum, r) => sum + Number(r.total), 0),
-        episodes: totalEp,
+        win: filteredRows2017.reduce((sum, r) => sum + Number(r.win), 0),
+        lose: filteredRows2017.reduce((sum, r) => sum + Number(r.lose), 0),
+        total: filteredRows2017.reduce((sum, r) => sum + Number(r.total), 0),
+        episodes: totalEp2017,
         positive_per_nine_episodes: (totalPos2017 * 9 / totalEp2017).toFixed(2),
         negative_per_nine_episodes: (totalNeg2017 * 9 / totalEp2017).toFixed(2),
 }
@@ -77,10 +80,10 @@ function Summary() {
     const totalEp2022 = filteredRows2022.reduce((sum, r) => sum + Number(r.episodes), 0)
     const totalRow2022 = {id: "total 2022", year: "Total 2022", positive: totalPos2022,
         negative: totalNeg2022,
-        win: rows.reduce((sum, r) => sum + Number(r.win), 0),
-        lose: rows.reduce((sum, r) => sum + Number(r.lose), 0),
-        total: rows.reduce((sum, r) => sum + Number(r.total), 0),
-        episodes: totalEp,
+        win: filteredRows2022.reduce((sum, r) => sum + Number(r.win), 0),
+        lose: filteredRows2022.reduce((sum, r) => sum + Number(r.lose), 0),
+        total: filteredRows2022.reduce((sum, r) => sum + Number(r.total), 0),
+        episodes: totalEp2022,
         positive_per_nine_episodes: (totalPos2022 * 9 / totalEp2022).toFixed(2),
         negative_per_nine_episodes: (totalNeg2022 * 9 / totalEp2022).toFixed(2),
 }
@@ -93,6 +96,9 @@ return (
 
             <button onClick={() => setCharacterAppearOption("all")}>All</button>
             <button onClick={() => setCharacterAppearOption("得点圏")}>得点圏～</button>    
+
+            <button onClick={() => setShortFilterOption("all")}>All</button>
+            <button onClick={() => setShortFilterOption("shorts")}>No shorts～</button>    
 
 
         <div style={{ height: 600 }}>

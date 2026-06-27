@@ -32,9 +32,6 @@ export default function Layout({ children }) {
         <Link to="/" style={{ color: "white" }}>Tracker</Link>
         <Link to="/summary" style={{ color: "white" }}>Summary</Link>
         <Link to="/categories" style={{ color: "white" }}>Categories</Link>
-        <Link to="/summary_script" style={{ color: "white" }}>Script Writer</Link>
-        <Link to="/summary_script_year" style={{ color: "white" }}>Script by Year</Link>
-        <Link to="/summary_rokuyo" style={{ color: "white" }}>Summary rokuyo</Link>
         <Link to="/movie" style={{ color: "white" }}>Movie</Link>
       </nav>
       <main style={{ flex: 1, padding: 24, backgroundColor: "white" }}>
