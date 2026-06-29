@@ -19,6 +19,8 @@ def add_anime(payload: AnimeCreate, db):
                 script_writer,
                 anime_director,
                 rating,
+                content_type,
+                alphabet,
                 watch_status
             )
             VALUES (
@@ -29,6 +31,8 @@ def add_anime(payload: AnimeCreate, db):
                 :script_writer,
                 :anime_director,
                 :rating,
+                :content_type,
+                :alphabet,
                 :watch_status
             )
         """), {**payload.model_dump()}
@@ -72,6 +76,8 @@ def update_anime(
                 script_writer = :script_writer,
                 anime_director = :anime_director,
                 rating = :rating,
+                content_type = :content_type,
+                alphabet = :alphabet,
                 watch_status = :watch_status
             WHERE anime_id = :anime_id
         """),

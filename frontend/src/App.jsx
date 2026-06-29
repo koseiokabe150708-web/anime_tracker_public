@@ -13,6 +13,8 @@ function App() {
   const [rating, setRating] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [content, setContent] = useState("ANIME_SHOW");
+  const [alphabets, setAlphabet] = useState("");
 
   const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
   const [year, setYear] = useState("all");
@@ -47,12 +49,14 @@ function App() {
 
       const payload = {
         title: title,
+        alphabet: alphabets,
         episode_number: Number(episodeNumber),
         notes: notes,
         script_writer: scriptwriter,
         anime_director: animedirector,
         anime_date: date,
-        rating: rating,
+        rating: Number(rating),
+        content_type: content,
         watch_status: watchStatus,
       };
 
@@ -73,6 +77,7 @@ function App() {
       setAnimeDirector("");
       setDate("");
       setRating(0);
+      setAlphabet("");
       setWatchStatus("WATCHED");
 
     } catch (err) {
@@ -91,7 +96,9 @@ function App() {
     setAnimeDirector(anime.anime_director || "");
     setDate(anime.anime_date);
     setWatchStatus(anime.watch_status || "");
+    setContent(anime.content_type || "");
     setRating(anime.rating || 0);
+    setAlphabet(anime.alphabet || "");
     setEditingAnime(anime)
   }
 
@@ -103,12 +110,14 @@ function App() {
 
     const payload = {
       title: title,
+      alphabet: alphabets,
       episode_number: Number(episodeNumber),
       notes: notes,
       script_writer: scriptwriter,
       anime_director: animedirector,
       anime_date: date,
-      rating: rating,
+      rating: Number(rating),
+      content_type: content,
       watch_status: watchStatus,
     };
 
@@ -138,6 +147,7 @@ function App() {
     setDate("");
     setWatchStatus("WATCHED");
     setRating(0);
+    setAlphabet("");
     setEditingAnime(null);
 
   } catch (err) {
@@ -192,6 +202,16 @@ function App() {
     <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
+    <label style={{ color: "black" }}>コンテンツ</label>
+    <select value={content} onChange={(e) => setContent(e.target.value)}>
+      {["ANIME_SHOW","SHORT", "SPECIAL"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+    </select>
+  </div>
+  <div style={{ display: "flex", flexDirection: "column" }}>
+    <label style={{ color: "black" }}>Alphabet</label>
+    <input value={alphabets} onChange={(e) => setAlphabet(e.target.value)} placeholder="Alphabet" style={{ width: "80px" }}/>
+  </div>
+  <div style={{ display: "flex", flexDirection: "column" }}>
     <label style={{ color: "black" }}>話数</label>
     <input type="number" value={episodeNumber} onChange={(e) => setEpisodeNumber(e.target.value)} placeholder="Episode number" style={{ width: "80px" }}/>
   </div>
@@ -236,7 +256,7 @@ function App() {
         const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
         const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.episode_number}</h2>
+            <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>
@@ -257,7 +277,7 @@ function App() {
         const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
         const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.episode_number}</h2>
+            <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>
@@ -277,7 +297,7 @@ function App() {
         const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
         const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.episode_number}</h2>
+            <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>

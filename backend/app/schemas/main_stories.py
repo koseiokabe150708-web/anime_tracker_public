@@ -9,4 +9,6 @@ class AnimeCreate(BaseModel):
     script_writer: str | None = None
     anime_director: str | None = None
     rating: int
+    content_type: str = "ANIME SHOW"
+    alphabet: str | None = None
     watch_status: str
