@@ -15,6 +15,7 @@ function App() {
   const [error, setError] = useState("");
   const [content, setContent] = useState("ANIME_SHOW");
   const [alphabets, setAlphabet] = useState("");
+  const [animeName, setAnimeName] = useState("");
 
   const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
   const [year, setYear] = useState("all");
@@ -26,11 +27,6 @@ function App() {
 })
   const [monthOption, setMonthOption] = useState("all");
   const filteredAnimemonth = monthOption === "all" ? filteredAnime : filteredAnime.filter((anime) => new Date(anime.anime_date).getMonth() + 1 === monthOption)
-
-  const scriptwriterOptions = ["all", "不明", "黒住光", "ひるまちかこ", "中弘子", "晨原大輔", "阪口和久", "モラル", "川辺美奈子", "清水東", "翁妙子", "ムトウユージ", "うえのきみこ", "筧昌也", "待田堂子", "永野たかひろ"]
-  const [scriptwriterOption, setScriptWriterOption] = useState("all");
-  const filteredAnimescript = scriptwriterOption === "all" ? filteredAnime : filteredAnime.filter((anime) => anime.script_writer === scriptwriterOption)
-
 
   const [activeFilter, setActiveFilter] = useState("year")
 
@@ -48,6 +44,7 @@ function App() {
       setError("");
 
       const payload = {
+        anime_name: animeName,
         title: title,
         alphabet: alphabets,
         episode_number: Number(episodeNumber),
@@ -70,6 +67,7 @@ function App() {
       const data = await res.json();
       setAnimeList(data);
 
+      setAnimeName("");
       setTitle("");
       setEpisodeNumber("");
       setNotes("");
@@ -89,6 +87,7 @@ function App() {
 
   async function handleEdit(anime){
     console.log("anime object:", anime)
+    setAnimeName(anime.anime_name || "");
     setTitle(anime.title || "");
     setEpisodeNumber(anime.episode_number);
     setNotes(anime.notes || "");
@@ -109,6 +108,7 @@ function App() {
     setError("");
 
     const payload = {
+      anime_name: animeName,
       title: title,
       alphabet: alphabets,
       episode_number: Number(episodeNumber),
@@ -139,6 +139,7 @@ function App() {
     const data = await res.json();
     setAnimeList(data);
 
+    setAnimeName("");
     setTitle("");
     setEpisodeNumber("");
     setNotes("");
@@ -180,7 +181,7 @@ function App() {
   return (
     <Layout>
       <div>
-        <h1 style={{ color: "#1a1a1a" }}>Shin Chan Tracker</h1>
+        <h1 style={{ color: "#1a1a1a" }}>Anime Recorder</h1>
 
         {error && <p style={{ color: "red" }}>{error}</p>}
         {loading && <p>Saving...</p>}
@@ -190,13 +191,14 @@ function App() {
   {years.map((y) => (<button key={y} onClick={() => { setYear(y); setActiveFilter("year"); }}>{y}</button>))}
 </div>
 <div style={{ textAlign: 'right' }}>
-  {scriptwriterOptions.map((s) => (<button key={s} onClick={() => { setScriptWriterOption(s); setActiveFilter("script_writer"); }}>{s}</button>))}
-</div>
-<div style={{ textAlign: 'right' }}>
   {monthOptions.map((m) => (<button key={m} onClick={() => { setMonthOption(m); setActiveFilter("month"); }}>{m === "all" ? "all" : `${m}月`}</button>))}
 </div>
 
 <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", margin: "16px 0", padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px" }}>
+  <div style={{ display: "flex", flexDirection: "column" }}>
+  <label style={{ color: "black" }}>アニメ名</label>
+  <input value={animeName} onChange={(e) => setAnimeName(e.target.value)} placeholder="Anime name" />
+</div>
   <div style={{ display: "flex", flexDirection: "column" }}>
     <label style={{ color: "black" }}>タイトル</label>
     <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
@@ -216,17 +218,13 @@ function App() {
     <input type="number" value={episodeNumber} onChange={(e) => setEpisodeNumber(e.target.value)} placeholder="Episode number" style={{ width: "80px" }}/>
   </div>
   <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>脚本</label>
-    <select value={scriptwriter} onChange={(e) => setScriptWriter(e.target.value)}>
-      {["", "不明", "黒住光", "ひるまちかこ", "中弘子", "晨原大輔", "阪口和久", "モラル", "川辺美奈子", "清水東", "翁妙子", "ムトウユージ", "うえのきみこ", "筧昌也", "待田堂子", "永野たかひろ"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
-    </select>
-  </div>
+  <label style={{ color: "black" }}>脚本</label>
+  <input value={scriptwriter} onChange={(e) => setScriptWriter(e.target.value)} placeholder="Script writer" />
+</div>
   <div style={{ display: "flex", flexDirection: "column" }}>
-    <label style={{ color: "black" }}>作画監督</label>
-    <select value={animedirector} onChange={(e) => setAnimeDirector(e.target.value)}>
-      {["", "不明", "木村優子", "間々田益子", "原勝徳", "門脇孝一", "入江康智", "針金屋英郎", "林静香", "大森孝敏", "樋口善法", "高倉佳彦", "橋本とよ子", "海老原尚樹", "尾鷲英俊"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
-    </select>
-  </div>
+  <label style={{ color: "black" }}>作画監督</label>
+  <input value={animedirector} onChange={(e) => setAnimeDirector(e.target.value)} placeholder="Anime director" />
+</div>
   <div style={{ display: "flex", flexDirection: "column" }}>
     <label style={{ color: "black" }}>日付</label>
     <input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
@@ -257,27 +255,7 @@ function App() {
         const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
             <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
-              <p>タイトル：{anime.title}</p>
-              <p>日付：{anime.anime_date}</p>
-              <p>脚本：{anime.script_writer}</p>
-              <p>作画監督：{anime.anime_director}</p>
-              <p>評価：{anime.rating}</p>
-              <button onClick={() => handleEdit(anime)}>Edit</button>
-              <button onClick={() => handleDelete(anime.anime_id)}>Delete</button>
-            </div>)
-  })}
-      </div>
-  )}
-            
-
-
-        {activeFilter === "script_writer" && (
-    <div style={{ display: "flex", flexWrap: "wrap" }}>
-      {filteredAnimescript.map((anime) => {
-        const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
-        const borderColor = bgColor
-          return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
-            <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
+              <p>アニメ：{anime.anime_name}</p>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>
@@ -298,6 +276,7 @@ function App() {
         const borderColor = bgColor
           return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
             <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
+              <p>アニメ：{anime.anime_name}</p>
               <p>タイトル：{anime.title}</p>
               <p>日付：{anime.anime_date}</p>
               <p>脚本：{anime.script_writer}</p>

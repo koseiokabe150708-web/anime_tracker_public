@@ -3,6 +3,7 @@ from datetime import date
 
 class AnimeCreate(BaseModel):
     title: str
+    anime_name: str | None = None
     episode_number: int
     anime_date: date
     notes: str | None = None
