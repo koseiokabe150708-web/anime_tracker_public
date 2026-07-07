@@ -6,6 +6,7 @@ import App from './App.jsx'
 import Summary from './Summary.jsx'
 import Categories from './Category.jsx'
 import Movie from './Movie.jsx'
+import AnimePage from './AnimePage.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -15,6 +16,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/summary" element={<Summary />} />
         <Route path="/categories" element={<Categories/>} />
         <Route path="/movie" element={<Movie/>} />
+        <Route path="/anime/:animeName" element={<AnimePage/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

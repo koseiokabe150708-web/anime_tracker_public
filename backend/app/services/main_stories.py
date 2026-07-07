@@ -12,6 +12,7 @@ def add_anime(payload: AnimeCreate, db):
     db.execute(
         text("""
             INSERT INTO anime_tracker (
+                anime_name,
                 title,
                 episode_number,
                 anime_date,
@@ -24,6 +25,7 @@ def add_anime(payload: AnimeCreate, db):
                 watch_status
             )
             VALUES (
+                :anime_name,
                 :title,
                 :episode_number,
                 :anime_date,
@@ -69,6 +71,7 @@ def update_anime(
         text("""
             UPDATE anime_tracker
             SET
+                anime_name = :anime_name,
                 title = :title,
                 episode_number = :episode_number,
                 anime_date = :anime_date,
