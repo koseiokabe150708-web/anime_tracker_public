@@ -3,6 +3,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.main_stories import router
 from app.api.movies import router as movie_router
 
+from app.api.users import router as users_router
+
 app = FastAPI()
 
 app.add_middleware(
@@ -19,3 +21,4 @@ def root():
 
 app.include_router(router)
 app.include_router(movie_router)
+app.include_router(users_router)
