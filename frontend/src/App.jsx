@@ -10,10 +10,19 @@ function App() {
   const [newAnimeName, setNewAnimeName] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/anime")
-      .then((res) => res.json())
-      .then((data) => setAnimeList(data));
-  }, []);
+  const token = localStorage.getItem("token");
+  if (!token) {
+    navigate("/login");
+    return;
+  }
+  fetch("http://127.0.0.1:8000/anime", {
+    headers: { "Authorization": `Bearer ${token}` }
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      if (Array.isArray(data)) setAnimeList(data);
+    });
+}, []);
 
   return (
   <Layout>

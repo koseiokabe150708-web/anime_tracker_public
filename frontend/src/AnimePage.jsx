@@ -38,11 +38,16 @@ function AnimePage() {
   const [editingAnime, setEditingAnime] = useState(null)
 
 
-    useEffect(() => {
-    fetch("http://127.0.0.1:8000/anime")
-      .then((res) => res.json())
-      .then((data) => setAnimeList(data));
-  }, []);
+  useEffect(() => {
+  const token = localStorage.getItem("token");
+  fetch("http://127.0.0.1:8000/anime", {
+    headers: {
+      "Authorization": `Bearer ${token}`
+    }
+  })
+    .then((res) => res.json())
+    .then((data) => setAnimeList(data));
+}, []);
 
   async function handleAddAnime() {
     try {
@@ -63,13 +68,22 @@ function AnimePage() {
         watch_status: watchStatus,
       };
 
-      await fetch("http://127.0.0.1:8000/anime", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
+      const token = localStorage.getItem("token");
 
-      const res = await fetch("http://127.0.0.1:8000/anime");
+      await fetch("http://127.0.0.1:8000/anime", {
+  method: "POST",
+  headers: { 
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify(payload),
+});
+
+
+// POST already has token, fix the refresh:
+const res = await fetch("http://127.0.0.1:8000/anime", {
+  headers: { "Authorization": `Bearer ${token}` }
+});
       const data = await res.json();
       setAnimeList(data);
 
@@ -105,6 +119,8 @@ function AnimePage() {
     setRating(anime.rating || 0);
     setAlphabet(anime.alphabet || "");
     setEditingAnime(anime)
+
+    
   }
 
   
@@ -129,19 +145,18 @@ function AnimePage() {
 
     console.log("payload:", payload)
 
-    const putRes = await fetch(`http://127.0.0.1:8000/anime/${editingAnime.anime_id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
-
-    console.log("status:", putRes.status)
-    if (!putRes.ok) {
-      const errorData = await putRes.json()
-      console.log("error detail:", JSON.stringify(errorData.detail))
-    }
-
-    const res = await fetch("http://127.0.0.1:8000/anime");
+    const token = localStorage.getItem("token");
+const putRes = await fetch(`http://127.0.0.1:8000/anime/${editingAnime.anime_id}`, {
+  method: "PUT",
+  headers: { 
+    "Content-Type": "application/json",
+    "Authorization": `Bearer ${token}`
+  },
+  body: JSON.stringify(payload),
+});
+const res = await fetch("http://127.0.0.1:8000/anime", {
+  headers: { "Authorization": `Bearer ${token}` }
+});
     const data = await res.json();
     setAnimeList(data);
 
@@ -169,11 +184,16 @@ function AnimePage() {
       setLoading(true);
       setError("");
       
-      await fetch(`http://127.0.0.1:8000/anime/${anime_id}`, {
-        method: "DELETE",
-      });
+      
 
-      const res = await fetch("http://127.0.0.1:8000/anime");
+      const token = localStorage.getItem("token");
+await fetch(`http://127.0.0.1:8000/anime/${anime_id}`, {
+  method: "DELETE",
+  headers: { "Authorization": `Bearer ${token}` }
+});
+const res = await fetch("http://127.0.0.1:8000/anime", {
+  headers: { "Authorization": `Bearer ${token}` }
+});
       const data = await res.json();
       setAnimeList(data);
 
