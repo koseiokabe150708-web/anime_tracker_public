@@ -18,13 +18,22 @@ function AnimePage() {
   const [content, setContent] = useState("ANIME_SHOW");
   const [alphabets, setAlphabet] = useState("");
   const [animeName, setAnimeName] = useState(urlAnimeName);
+  const [animeSearch, setAnimeSearch] = useState("");
+  const [sortOption, setSortOption] = useState("");
 
   const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
   const [year, setYear] = useState("all");
 
+  const filteredByAnimeName = animeList.filter(a => a.anime_name === urlAnimeName)
+  
+
+const filteredBySearch = animeSearch === "" 
+  ? filteredByAnimeName 
+  : filteredByAnimeName.filter(a => a.title.includes(animeSearch))
+
   const filteredAnime = year === "all" 
-  ? animeList.filter(a => a.anime_name === urlAnimeName) 
-  : animeList.filter(a => a.anime_name === urlAnimeName && new Date(a.anime_date).getFullYear() === year)
+  ? filteredBySearch
+  : filteredBySearch.filter(a => new Date(a.anime_date).getFullYear() === year)
 
   const monthOptions = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getMonth() + 1))].sort((a, b) => {
   if (a === "all") return -1;
@@ -36,6 +45,11 @@ function AnimePage() {
   const [activeFilter, setActiveFilter] = useState("year")
 
   const [editingAnime, setEditingAnime] = useState(null)
+
+  const sortedAnime = sortOption === "date" ? [...filteredAnime].sort((a, b) => new Date(a.anime_date) - new Date(b.anime_date)) : 
+  sortOption === "rating" ? [...filteredAnime].sort((a, b) => b.rating - a.rating) :
+  sortOption === "episode" ? [...filteredAnime].sort((a, b) => a.episode_number - b.episode_number) : filteredAnime
+
 
 
   useEffect(() => {
@@ -219,6 +233,12 @@ const res = await fetch("http://127.0.0.1:8000/anime", {
     <div style={{ textAlign: 'right' }}>
       {monthOptions.map((m) => (<button key={m} onClick={() => { setMonthOption(m); setActiveFilter("month"); }}>{m === "all" ? "all" : `${m}月`}</button>))}
     </div>
+
+    <div>
+  <button onClick={() => setSortOption("date")}>日付順</button>
+  <button onClick={() => setSortOption("rating")}>評価順</button>
+  <button onClick={() => setSortOption("episode")}>話数順</button>
+</div>
     
     
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -261,7 +281,13 @@ const res = await fetch("http://127.0.0.1:8000/anime", {
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <label style={{ color: "black" }}>視聴状況</label>
-        <input value={watchStatus} onChange={(e) => setWatchStatus(e.target.value)} placeholder="Watch status" />
+        <select value={watchStatus} onChange={(e) => setWatchStatus(e.target.value)}>
+          {["WATCHED", "WATCHING", "PLAN TO WATCH", "DROPPED"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+        </select>
+      </div>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <label style={{ color: "black" }}>検索</label>
+        <input value={animeSearch} onChange={(e) => setAnimeSearch(e.target.value)} placeholder="Anime search" />
       </div>
       <div style={{ display: "flex", alignItems: "flex-end" }}>
         <button onClick={editingAnime ? handleUpdate : handleAddAnime}>
@@ -272,7 +298,7 @@ const res = await fetch("http://127.0.0.1:8000/anime", {
     
             {activeFilter === "year" && (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
-          {filteredAnime.map((anime) => {
+          {sortedAnime.map((anime) => {
             const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
             const borderColor = bgColor
               return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
@@ -293,7 +319,7 @@ const res = await fetch("http://127.0.0.1:8000/anime", {
     
             {activeFilter === "month" && (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
-          {filteredAnimemonth.map((anime) => {
+          {sortedAnime.map((anime) => {
             const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
             const borderColor = bgColor
               return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
