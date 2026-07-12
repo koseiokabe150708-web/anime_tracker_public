@@ -50,6 +50,11 @@ const filteredBySearch = animeSearch === ""
   sortOption === "rating" ? [...filteredAnime].sort((a, b) => b.rating - a.rating) :
   sortOption === "episode" ? [...filteredAnime].sort((a, b) => a.episode_number - b.episode_number) : filteredAnime
 
+  const [currentPage, setCurrentPage] = useState(1)
+  const pageSize = 20
+  const paginatedAnime = sortedAnime.slice((currentPage - 1) * pageSize, currentPage * pageSize)
+  const totalPages = Math.ceil(sortedAnime.length / pageSize)
+
 
 
   useEffect(() => {
@@ -294,11 +299,16 @@ const res = await fetch("http://127.0.0.1:8000/anime", {
           {editingAnime ? "Update" : "Add Anime"}
         </button>
       </div>
+      <div style={{ display: "flex", flexDirection: "column" }}>
+        <button onClick={() => setCurrentPage(p=>p - 1)} disabled={currentPage === 1}>Previous</button>
+        <span>{currentPage}/{totalPages}</span>
+        <button onClick={() => setCurrentPage(p=>p + 1)} disabled={currentPage === totalPages}>Next</button>
+      </div>
     </div>
     
             {activeFilter === "year" && (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
-          {sortedAnime.map((anime) => {
+          {paginatedAnime.map((anime) => {
             const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
             const borderColor = bgColor
               return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
@@ -319,7 +329,7 @@ const res = await fetch("http://127.0.0.1:8000/anime", {
     
             {activeFilter === "month" && (
         <div style={{ display: "flex", flexWrap: "wrap" }}>
-          {sortedAnime.map((anime) => {
+          {paginatedAnime.map((anime) => {
             const bgColor = anime.watch_status === "WATCHED" ? "#004583" : "#888888"
             const borderColor = bgColor
               return (<div key={anime.anime_id} style={{ border: `2px solid ${borderColor}`, backgroundColor: bgColor, padding: "10px", color: "white",margin: "10px", borderRadius: "8px", width: "250px" }}>
