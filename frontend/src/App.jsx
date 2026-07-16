@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Layout from "./Layout"
 import { useNavigate } from "react-router-dom";
+import { fetchWithAuth } from "./api";
 
 function App() {
 
@@ -15,9 +16,7 @@ function App() {
     navigate("/login");
     return;
   }
-  fetch("http://127.0.0.1:8000/anime", {
-    headers: { "Authorization": `Bearer ${token}` }
-  })
+  fetchWithAuth("http://127.0.0.1:8000/anime")
     .then((res) => res.json())
     .then((data) => {
       if (Array.isArray(data)) setAnimeList(data);
