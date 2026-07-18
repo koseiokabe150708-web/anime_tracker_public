@@ -214,6 +214,15 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
     }
   }
 
+  function resetFilter(){
+    setYear("all");
+    setMonthOption("all");
+    setSortOption("");
+    setAnimeSearch("");
+    setCurrentPage(1);
+    
+  }
+
     return (
   <Layout>
     {/* Form at top */}
@@ -308,6 +317,7 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
           <p style={{ fontWeight: "bold", marginBottom: "4px" }}>検索</p>
           <input value={animeSearch} onChange={(e) => setAnimeSearch(e.target.value)} placeholder="Anime search" style={{ width: "100%" }}/>
         </div>
+        <button onClick={() => resetFilter()}>reset</button>
       </div>
 
       {/* Cards + Pagination */}
