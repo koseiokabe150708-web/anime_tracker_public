@@ -67,6 +67,24 @@ const filteredBySearch = animeSearch === ""
 }, []);
 
   async function handleAddAnime() {
+
+    if (!title.trim()){
+      setError("タイトルを入力してください");
+      return;
+    }
+    if(!episodeNumber || episodeNumber <= 0){
+      setError("話数を入力してください")
+      return;
+    }
+    if(!date){
+      setError("日付を入力してください")
+      return;
+    }
+    if(!rating || rating < 1 || rating > 10){
+      setError("評価を入力してください")
+      return;
+    }
+
     try {
       setLoading(true);
       setError("");
@@ -232,6 +250,8 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
   <button onClick={() => setShowForm(!showForm)}>
     {showForm ? "✕ Close" : "+ Add Anime"}
   </button>
+
+  {error && <p style={{ color: "red" }}>{error}</p>}
 
   {showForm && (
     <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", width: "100%" }}>
