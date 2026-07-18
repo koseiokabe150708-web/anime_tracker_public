@@ -190,13 +190,15 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
 }
 
   async function handleDelete(anime_id){
+    const confirmed = window.confirm("本当に削除しますか?")
+    if (!confirmed) return;
+
     try {
       setLoading(true);
       setError("");
       
       
 
-      const token = localStorage.getItem("token");
 await fetchWithAuth(`http://127.0.0.1:8000/anime/${anime_id}`, {
   method: "DELETE",
 });
