@@ -21,6 +21,7 @@ function AnimePage() {
   const [animeName, setAnimeName] = useState(urlAnimeName);
   const [animeSearch, setAnimeSearch] = useState("");
   const [sortOption, setSortOption] = useState("");
+  const [showForm, setShowForm] = useState(false);
 
   const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
   const [year, setYear] = useState("all");
@@ -216,10 +217,15 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
     return (
   <Layout>
     {/* Form at top */}
-    <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px", marginBottom: "16px" }}>
-      <h1 style={{ color: "#1a1a1a", width: "100%" }}>{urlAnimeName}</h1>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      {loading && <p>Saving...</p>}
+<div style={{ display: "flex", flexWrap: "wrap", gap: "16px", padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px", marginBottom: "16px" }}>
+  <h1 style={{ color: "#1a1a1a", width: "100%" }}>{urlAnimeName}</h1>
+  
+  <button onClick={() => setShowForm(!showForm)}>
+    {showForm ? "✕ Close" : "+ Add Anime"}
+  </button>
+
+  {showForm && (
+    <div style={{ display: "flex", flexWrap: "wrap", gap: "16px", width: "100%" }}>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <label>タイトル</label>
         <input value={title} onChange={(e) => setTitle(e.target.value)} placeholder="Title" />
@@ -227,7 +233,7 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
       <div style={{ display: "flex", flexDirection: "column" }}>
         <label>コンテンツ</label>
         <select value={content} onChange={(e) => setContent(e.target.value)}>
-          {["ANIME_SHOW","SHORT", "SPECIAL"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+          {["ANIME_SHOW","SHORT","SPECIAL"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
         </select>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
@@ -256,12 +262,12 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <label>評価</label>
-        <input type="number" value={rating} onChange={(e) => setRating(e.target.value)} placeholder="Ratings" style={{ width: "80px" }}/>
+        <input type="number" value={rating} onChange={(e) => setRating(e.target.value)} style={{ width: "80px" }}/>
       </div>
       <div style={{ display: "flex", flexDirection: "column" }}>
         <label>視聴状況</label>
         <select value={watchStatus} onChange={(e) => setWatchStatus(e.target.value)}>
-          {["WATCHED", "WATCHING", "PLAN TO WATCH", "DROPPED"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
+          {["WATCHED","WATCHING","PLAN TO WATCH","DROPPED"].map((opt) => (<option key={opt} value={opt}>{opt}</option>))}
         </select>
       </div>
       <div style={{ display: "flex", alignItems: "flex-end" }}>
@@ -270,6 +276,8 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
         </button>
       </div>
     </div>
+  )}
+</div>
 
     {/* Sidebar + Cards */}
     <div style={{ display: "flex", gap: "16px" }}>
