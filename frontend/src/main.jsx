@@ -9,6 +9,7 @@ import Movie from './Movie.jsx'
 import AnimePage from './AnimePage.jsx'
 import Login from './Login.jsx'
 import Register from './Register.jsx'
+import Profile from './Profile.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')).render(
         <Route path="/anime/:animeName" element={<AnimePage/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />
+        <Route path="/profile" element={<Profile/>} />
       </Routes>
     </BrowserRouter>
   </StrictMode>,

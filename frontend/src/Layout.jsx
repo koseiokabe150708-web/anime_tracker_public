@@ -41,6 +41,7 @@ export default function Layout({ children }) {
         <Link to="/summary" style={{ color: "white" }}>Summary</Link>
         <Link to="/categories" style={{ color: "white" }}>Categories</Link>
         <Link to="/movie" style={{ color: "white" }}>Movie</Link>
+        <Link to="/profile" style={{ color: "white" }}>Profile</Link>
       </nav>
 
 
