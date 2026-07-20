@@ -226,6 +226,20 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
     try {
       setLoading(true);
       setError("");
+
+  
+  async function handleDeleteCharacter(character_id) {
+  const confirmed = window.confirm("このキャラクターを削除しますか？");
+  if (!confirmed) return;
+  
+  await fetchWithAuth(`http://127.0.0.1:8000/character/${character_id}`, {
+    method: "DELETE",
+  });
+  
+  const res = await fetchWithAuth("http://127.0.0.1:8000/character");
+  const data = await res.json();
+  setCharacters(data.filter(c => c.anime_name === urlAnimeName));
+}
       
       
 

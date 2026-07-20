@@ -28,6 +28,53 @@ def add_character(payload: CharacterCreate, db, user_id: int):
 
     return {"message": "Character added successfully"}
 
+def update_character(
+    character_id: int,
+    payload: CharacterCreate,
+    db
+    , user_id: int
+):
+
+    result = db.execute(
+        text("""
+            UPDATE characters
+            SET
+                anime_name = :anime_name,
+                character_name = :character_name
+            WHERE character_id = :character_id AND user_id = :user_id
+        """),
+        {
+            **payload.model_dump(),
+            "character_id": character_id,
+            "user_id": user_id,
+        }
+    )
+
+    db.commit()
+
+    if result.rowcount == 0:
+        raise HTTPException(
+            status_code=404,
+            detail="Character not found"
+        )
+
+    return {"message": "Character updated successfully"}
+
+def delete_character(character_id: int, db, user_id: int):
+    result = db.execute(
+        text("""
+            DELETE FROM characters WHERE character_id = :character_id AND user_id = :user_id
+        """),{"character_id": character_id, "user_id": user_id}
+    )
+    if result.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Character not found")
+
+    db.commit()
+
+    return {"message": "Character deleted successfully"}
+
+
+
 def get_episode_characters(anime_id: int, db):
     rows = db.execute(text("SELECT * FROM episode_characters WHERE anime_id=:anime_id ORDER BY episode_character_id"), {"anime_id": anime_id}).fetchall()
     return [dict(row._mapping) for row in rows]
