@@ -23,6 +23,9 @@ function AnimePage() {
   const [animeSearch, setAnimeSearch] = useState("");
   const [sortOption, setSortOption] = useState("");
   const [showForm, setShowForm] = useState(false);
+  const [newCharacterName, setNewCharacterName] = useState("");
+  const [characters, setCharacters] = useState([]);
+
 
   const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
   const [year, setYear] = useState("all");
@@ -65,6 +68,13 @@ const filteredBySearch = animeSearch === ""
   fetchWithAuth("http://127.0.0.1:8000/anime")
     .then((res) => res.json())
     .then((data) => setAnimeList(data));
+}, []);
+
+// fetch characters
+useEffect(() => {
+  fetchWithAuth("http://127.0.0.1:8000/character")
+    .then(res => res.json())
+    .then(data => setCharacters(data.filter(c => c.anime_name === urlAnimeName)));
 }, []);
 
   async function handleAddAnime() {
@@ -242,6 +252,20 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
     
   }
 
+  async function handleAddCharacter() {
+  if (!newCharacterName.trim()) return;
+  await fetchWithAuth("http://127.0.0.1:8000/character", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ anime_name: urlAnimeName, character_name: newCharacterName })
+  });
+  setNewCharacterName("");
+  // refresh characters
+  const res = await fetchWithAuth("http://127.0.0.1:8000/character");
+  const data = await res.json();
+  setCharacters(data.filter(c => c.anime_name === urlAnimeName));
+}
+
     return (
   <Layout>
     {/* Form at top */}
@@ -309,9 +333,31 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
   )}
 </div>
 
+ {/* Character Management */}
+<div style={{ padding: "16px", backgroundColor: "#f5f5f5", borderRadius: "8px", marginBottom: "16px" }}>
+  <h3>キャラクター管理</h3>
+  <div style={{ display: "flex", gap: "8px", marginBottom: "8px" }}>
+    <input 
+      value={newCharacterName} 
+      onChange={(e) => setNewCharacterName(e.target.value)} 
+      placeholder="キャラクター名" 
+    />
+    <button onClick={handleAddCharacter}>追加</button>
+  </div>
+  <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
+    {characters.map(c => (
+      <span key={c.character_id} style={{ backgroundColor: "#ddd", padding: "4px 8px", borderRadius: "4px" }}>
+        {c.character_name}
+      </span>
+    ))}
+  </div>
+</div>
+
+
     {/* Sidebar + Cards */}
     <div style={{ display: "flex", gap: "16px" }}>
 
+     
       {/* Sidebar */}
       <div style={{ width: "180px", display: "flex", flexDirection: "column", gap: "12px", backgroundColor: "#f5f5f5", }}>
         <div>
