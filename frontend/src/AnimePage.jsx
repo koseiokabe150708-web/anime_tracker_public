@@ -26,6 +26,9 @@ function AnimePage() {
   const [newCharacterName, setNewCharacterName] = useState("");
   const [characters, setCharacters] = useState([]);
 
+  const [editingCharacter, setEditingCharacter] = useState(null);
+  const [editCharacterName, setEditCharacterName] = useState("");
+
 
   const years = ["all", ...new Set(animeList.map((anime) => new Date(anime.anime_date).getFullYear()))]
   const [year, setYear] = useState("all");
@@ -280,6 +283,34 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
   setCharacters(data.filter(c => c.anime_name === urlAnimeName));
 }
 
+async function handleDeleteCharacter(character_id) {
+  const confirmed = window.confirm("このキャラクターを削除しますか？");
+  if (!confirmed) return;
+  
+  await fetchWithAuth(`http://127.0.0.1:8000/character/${character_id}`, {
+    method: "DELETE",
+  });
+  
+  const res = await fetchWithAuth("http://127.0.0.1:8000/character");
+  const data = await res.json();
+  setCharacters(data.filter(c => c.anime_name === urlAnimeName));
+}
+
+async function handleUpdateCharacter(character_id) {
+  await fetchWithAuth(`http://127.0.0.1:8000/character/${character_id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ 
+      anime_name: urlAnimeName, 
+      character_name: editCharacterName 
+    })
+  });
+  setEditingCharacter(null);
+  const res = await fetchWithAuth("http://127.0.0.1:8000/character");
+  const data = await res.json();
+  setCharacters(data.filter(c => c.anime_name === urlAnimeName));
+}
+
     return (
   <Layout>
     {/* Form at top */}
@@ -359,11 +390,25 @@ const res = await fetchWithAuth("http://127.0.0.1:8000/anime");
     <button onClick={handleAddCharacter}>追加</button>
   </div>
   <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
-    {characters.map(c => (
-      <span key={c.character_id} style={{ backgroundColor: "#ddd", padding: "4px 8px", borderRadius: "4px" }}>
+
+{characters.map(c => (
+  <span key={c.character_id} style={{ backgroundColor: "#ddd", padding: "4px 8px", borderRadius: "4px", display: "inline-flex", gap: "4px", alignItems: "center" }}>
+    {editingCharacter === c.character_id ? (
+      <>
+        <input value={editCharacterName} onChange={(e) => setEditCharacterName(e.target.value)} style={{ width: "100px" }}/>
+        <button onClick={() => handleUpdateCharacter(c.character_id)}>保存</button>
+        <button onClick={() => setEditingCharacter(null)}>✕</button>
+      </>
+    ) : (
+      <>
         {c.character_name}
-      </span>
-    ))}
+        <button onClick={() => { setEditingCharacter(c.character_id); setEditCharacterName(c.character_name); }} style={{ background: "none", border: "none", cursor: "pointer" }}>✏️</button>
+        <button onClick={() => handleDeleteCharacter(c.character_id)} style={{ background: "none", border: "none", cursor: "pointer", color: "red" }}>×</button>
+      </>
+    )}
+  </span>
+))}
+    
   </div>
 </div>
 
