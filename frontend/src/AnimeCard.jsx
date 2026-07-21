@@ -36,6 +36,15 @@ async function handleAddEpisodeCharacter() {
   setShowCharacterInput(false);
 }
 
+async function handleDeleteEpisodeCharacter(episode_character_id) {
+  await fetchWithAuth(`http://127.0.0.1:8000/episode_character/${episode_character_id}`, {
+    method: "DELETE",
+  });
+  const res = await fetchWithAuth(`http://127.0.0.1:8000/episode_character/${anime.anime_id}`);
+  const data = await res.json();
+  setEpisodeCharacters(data);
+}
+
   return (
   <div style={{ border: "2px solid #004583", backgroundColor: "#004583", padding: "10px", color: "white", margin: "10px", borderRadius: "8px", width: "250px" }}>
     <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
@@ -50,8 +59,13 @@ async function handleAddEpisodeCharacter() {
     <div>
       <p>登場キャラ：{episodeCharacters.map(ec => {
   const character = characters.find(c => c.character_id === ec.character_id);
-  return character ? character.character_name : ec.character_id;
-}).join(", ")}</p>
+  return (
+    <span key={ec.episode_character_id}>
+      {character ? character.character_name : ec.character_id}
+      <button onClick={() => handleDeleteEpisodeCharacter(ec.episode_character_id)} style={{ background: "none", border: "none", color: "red", cursor: "pointer" }}>×</button>
+    </span>
+  );
+})}</p>
       <button onClick={() => setShowCharacterInput(!showCharacterInput)}>+ キャラ追加</button>
       {showCharacterInput && (
         <div>

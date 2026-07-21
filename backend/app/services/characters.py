@@ -96,3 +96,13 @@ def add_episode_character(payload: EpisodeCharacterCreate, db):
     db.commit()
 
     return {"message": "Episode character added successfully"}
+
+def delete_episode_character(episode_character_id: int, db):
+    result = db.execute(
+        text("DELETE FROM episode_characters WHERE episode_character_id = :episode_character_id"),
+        {"episode_character_id": episode_character_id}
+    )
+    if result.rowcount == 0:
+        raise HTTPException(status_code=404, detail="Episode character not found")
+    db.commit()
+    return {"message": "Episode character deleted successfully"}

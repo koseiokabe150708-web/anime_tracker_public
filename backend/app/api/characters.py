@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from database import get_db
-from app.services.characters import get_character, add_character, update_character, delete_character, get_episode_characters, add_episode_character
+from app.services.characters import get_character, add_character, update_character, delete_character, get_episode_characters, add_episode_character, delete_episode_character
 from app.schemas.characters import CharacterCreate, EpisodeCharacterCreate
 from app.auth import get_current_user
 
@@ -25,6 +25,10 @@ def update_character_endpoint(character_id: int, payload: CharacterCreate, db: S
 @router.delete("/character/{character_id}")
 def delete_character_endpoint(character_id: int, db: Session = Depends(get_db), current_user: dict = Depends(get_current_user)):
     return delete_character(character_id, db, current_user["user_id"])
+
+@router.delete("/episode_character/{episode_character_id}")
+def delete_episode_character_endpoint(episode_character_id: int, db: Session = Depends(get_db)):
+    return delete_episode_character(episode_character_id, db)
 
 @router.get("/episode_character/{anime_id}")
 def get_episode_character_endpoint(anime_id: int, db: Session = Depends(get_db)):
