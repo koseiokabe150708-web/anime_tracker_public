@@ -3,7 +3,8 @@ from sqlalchemy.orm import Session
 from sqlalchemy import text
 from database import get_db
 from app.schemas.users import UserCreate, UserLogin, Token, RefreshToken
-from app.auth import hash_password, verify_password, create_access_token, create_refresh_token
+from app.auth import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
+from jose import JWTError
 from fastapi.security import OAuth2PasswordRequestForm
 
 router = APIRouter(
@@ -51,9 +52,17 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 def refresh(payload: RefreshToken, db: Session = Depends(get_db)):
     if not payload.refresh_token:
         raise HTTPException(status_code=401, detail="Refresh token missing")
+    try:
+        decoded = decode_token(payload.refresh_token)
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid or expired refresh token")
+
+    user_id = decoded.get("user_id")
+    if user_id is None:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
     user = db.execute(
-        text("SELECT * FROM users WHERE refresh_token = :refresh_token"),
-        {"refresh_token": payload.refresh_token}
+        text("SELECT * FROM users WHERE user_id = :user_id AND refresh_token = :refresh_token"),
+        {"user_id": user_id, "refresh_token": payload.refresh_token}
     ).mappings().fetchone()
 
     if not user:

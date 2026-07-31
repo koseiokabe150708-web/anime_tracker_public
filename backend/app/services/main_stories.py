@@ -9,12 +9,35 @@ def get_anime(db, user_id: int):
 
 def add_anime(payload: AnimeCreate, db, user_id: int):
 
+    anime_exist = db.execute(text("""SELECT 1 FROM anime_tracker 
+        WHERE user_id = :user_id 
+        AND anime_name = :anime_name 
+        AND LOWER(TRIM(title)) = LOWER(TRIM(:title)) 
+        AND episode_number = :episode_number """), 
+        {"user_id": user_id, "anime_name" : payload.anime_name, "title" : payload.title, "episode_number" : payload.episode_number}).fetchone()
+    
+    if anime_exist:
+            raise HTTPException(status_code=400, detail="An anime with this title already exists")
+
+    episode_exist = db.execute(text("""SELECT 1 FROM anime_tracker 
+            WHERE user_id = :user_id 
+            AND anime_name = :anime_name 
+            AND episode_number = :episode_number 
+            AND season_number IS NOT DISTINCT FROM :season_number 
+            AND alphabet IS NOT DISTINCT FROM :alphabet """), 
+            {"user_id": user_id, "anime_name" : payload.anime_name, "episode_number" : payload.episode_number, "season_number" : payload.season_number, "alphabet" : payload.alphabet}).fetchone()
+        
+    if episode_exist:
+                raise HTTPException(status_code=400, detail="An anime with this episode number already exists")
+
     db.execute(
         text("""
             INSERT INTO anime_tracker (
                 anime_name,
                 title,
                 episode_number,
+                season_number,
+                runtime,
                 anime_date,
                 notes,
                 script_writer,
@@ -29,6 +52,8 @@ def add_anime(payload: AnimeCreate, db, user_id: int):
                 :anime_name,
                 :title,
                 :episode_number,
+                :season_number,
+                :runtime,
                 :anime_date,
                 :notes,
                 :script_writer,
@@ -69,6 +94,27 @@ def update_anime(
     db
     , user_id: int
 ):
+    anime_exist = db.execute(text("""SELECT 1 FROM anime_tracker 
+            WHERE user_id = :user_id 
+            AND anime_name = :anime_name 
+            AND LOWER(TRIM(title)) = LOWER(TRIM(:title)) \
+            AND anime_id != :anime_id """), 
+            {"user_id": user_id, "anime_name" : payload.anime_name, "title" : payload.title, "anime_id" : anime_id}).fetchone()
+        
+    if anime_exist:
+         raise HTTPException(status_code=400, detail="An anime with this title already exists")
+    
+    episode_exist = db.execute(text("""SELECT 1 FROM anime_tracker 
+                WHERE user_id = :user_id 
+                AND anime_name = :anime_name 
+                AND episode_number = :episode_number 
+                AND season_number IS NOT DISTINCT FROM :season_number 
+                AND alphabet IS NOT DISTINCT FROM :alphabet 
+                AND anime_id != :anime_id"""), 
+                {"user_id": user_id, "anime_name" : payload.anime_name, "episode_number" : payload.episode_number, "season_number" : payload.season_number, "alphabet" : payload.alphabet, "anime_id" : anime_id}).fetchone()
+            
+    if episode_exist:
+          raise HTTPException(status_code=400, detail="An anime with this episode number already exists")
 
     result = db.execute(
         text("""
@@ -77,6 +123,8 @@ def update_anime(
                 anime_name = :anime_name,
                 title = :title,
                 episode_number = :episode_number,
+                season_number = :season_number,
+                runtime = :runtime,
                 anime_date = :anime_date,
                 notes = :notes,
                 script_writer = :script_writer,

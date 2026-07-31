@@ -5,6 +5,8 @@ class AnimeCreate(BaseModel):
     title: str
     anime_name: str | None = None
     episode_number: int
+    season_number: int | None = None
+    runtime: int | None = None
     anime_date: date
     notes: str | None = None
     script_writer: str | None = None
