@@ -3,9 +3,8 @@ import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
 import App from './App.jsx'
-import Summary from './Summary.jsx'
-import Categories from './Category.jsx'
-import Movie from './Movie.jsx'
+import MoviePage from "./MoviePage";
+import MovieHome from "./MovieHome";
 import AnimePage from './AnimePage.jsx'
 import Login from './Login.jsx'
 import Register from './Register.jsx'
@@ -16,9 +15,8 @@ createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<App />} />
-        <Route path="/summary" element={<Summary />} />
-        <Route path="/categories" element={<Categories/>} />
-        <Route path="/movie" element={<Movie/>} />
+        <Route path="/movie" element={<MovieHome/>} />
+        <Route path="/movie/:animeName" element={<MoviePage/>} />
         <Route path="/anime/:animeName" element={<AnimePage/>} />
         <Route path="/login" element={<Login/>} />
         <Route path="/register" element={<Register/>} />

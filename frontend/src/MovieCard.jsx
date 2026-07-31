@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { fetchWithAuth, API_BASE_URL } from "./api";
 
-function AnimeCard({ anime, onEdit, onDelete }) {
+function MovieCard({ movie, onEdit, onDelete }) {
   const [characters, setCharacters] = useState([]);
   const [episodeCharacters, setEpisodeCharacters] = useState([]);
   const [showCharacterInput, setShowCharacterInput] = useState(false);
@@ -15,11 +15,11 @@ function AnimeCard({ anime, onEdit, onDelete }) {
 
 useEffect(() => {
   fetchWithAuth(
-    `${API_BASE_URL}/episode_character/${anime.anime_id}`
+    `${API_BASE_URL}/episode_character/${movie.anime_id}`
   )
     .then((res) => res.json())
     .then((data) => setEpisodeCharacters(data));
-}, [anime.anime_id]);
+}, [movie.anime_id]);
 
 async function handleAddEpisodeCharacter() {
   if (!selectedCharacter) return;
@@ -28,13 +28,13 @@ async function handleAddEpisodeCharacter() {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      anime_id: anime.anime_id,
+      anime_id: movie.anime_id,
       character_id: Number(selectedCharacter),
     }),
   });
 
   const res = await fetchWithAuth(
-    `${API_BASE_URL}/episode_character/${anime.anime_id}`
+    `${API_BASE_URL}/episode_character/${movie.anime_id}`
   );
 
   const data = await res.json();
@@ -52,7 +52,7 @@ async function handleDeleteEpisodeCharacter(episode_character_id) {
   );
 
   const res = await fetchWithAuth(
-    `${API_BASE_URL}/episode_character/${anime.anime_id}`
+    `${API_BASE_URL}/episode_character/${movie.anime_id}`
   );
 
   const data = await res.json();
@@ -61,13 +61,15 @@ async function handleDeleteEpisodeCharacter(episode_character_id) {
 
   return (
   <div style={{ border: "2px solid #004583", backgroundColor: "#004583", padding: "10px", color: "white", margin: "10px", borderRadius: "8px", width: "250px" }}>
-    <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
-    <p>タイトル：{anime.title}</p>
-    <p>日付：{anime.anime_date}</p>
-    <p>脚本：{anime.script_writer}</p>
-    <p>作画監督：{anime.anime_director}</p>
-    <p>評価：{anime.rating}</p>
-    <p>視聴状況：{anime.watch_status}</p>
+    <h2>{`${movie.episode_number}`}</h2>
+    <p>Anime name：{movie.anime_name}</p>
+    <p>Title：{movie.title}</p>
+    <p>日付：{movie.anime_date}</p>
+    <p>runtime: {movie.runtime}</p>
+    <p>脚本：{movie.script_writer}</p>
+    <p>作画監督：{movie.anime_director}</p>
+    <p>評価：{movie.rating}</p>
+    <p>視聴状況：{movie.watch_status}</p>
     
     {/* Characters */}
     <div>
@@ -85,7 +87,7 @@ async function handleDeleteEpisodeCharacter(episode_character_id) {
         <div>
           <select value={selectedCharacter} onChange={(e) => setSelectedCharacter(e.target.value)}>
             <option value="">選択してください</option>
-            {characters.filter(c => c.anime_name === anime.anime_name).map(c => (
+            {characters.filter(c => c.anime_name === movie.anime_name).map(c => (
               <option key={c.character_id} value={c.character_id}>{c.character_name}</option>
             ))}
           </select>
@@ -94,9 +96,9 @@ async function handleDeleteEpisodeCharacter(episode_character_id) {
       )}
     </div>
 
-    <button onClick={() => onEdit(anime)}>Edit</button>
-    <button onClick={() => onDelete(anime.anime_id)}>Delete</button>
+    <button onClick={() => onEdit(movie)}>Edit</button>
+    <button onClick={() => onDelete(movie.anime_id)}>Delete</button>
   </div>
 );}
 
-export default AnimeCard;
+export default MovieCard;

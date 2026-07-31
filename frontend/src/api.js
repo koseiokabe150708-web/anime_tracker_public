@@ -1,3 +1,5 @@
+export const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://127.0.0.1:8000";
 export async function fetchWithAuth(url, options = {}) {
   const token = localStorage.getItem("token");
   
@@ -9,10 +11,11 @@ export async function fetchWithAuth(url, options = {}) {
     }
   });
 
+
   if (response.status === 401) {
     // Try to refresh the token
     const refreshToken = localStorage.getItem("refresh_token");
-    const refreshRes = await fetch("http://127.0.0.1:8000/refresh", {
+    const refreshRes = await fetch(`${API_BASE_URL}/refresh`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ refresh_token: refreshToken })
@@ -34,6 +37,7 @@ export async function fetchWithAuth(url, options = {}) {
       // Refresh failed, redirect to login
       localStorage.clear();
       window.location.href = "/login";
+      return;
     }
   }
 

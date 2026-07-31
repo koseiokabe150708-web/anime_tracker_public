@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Layout from "./Layout"
+import { API_BASE_URL } from "./api";
 
 function Login(){
     const [email, setEmail] = useState("");
@@ -18,7 +19,7 @@ function Login(){
       formData.append("username", email);
       formData.append("password", password);
       
-      const res = await fetch("http://127.0.0.1:8000/login", {
+      const res = await fetch(`${API_BASE_URL}/login`, {
         method: "POST",
         body: formData,
     });
@@ -30,7 +31,7 @@ function Login(){
 
     const data = await res.json();
 localStorage.setItem("token", data.access_token);
-localStorage.setItem("token", data.refresh_token);
+localStorage.setItem("refresh_token", data.refresh_token);
 
       
       setEmail("");

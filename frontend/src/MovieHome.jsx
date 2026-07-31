@@ -3,13 +3,11 @@ import Layout from "./Layout"
 import { useNavigate } from "react-router-dom";
 import { fetchWithAuth, API_BASE_URL } from "./api";
 
-function App() {
+function MovieHome() {
 
   const [animeList, setAnimeList] = useState([]);
-  const onlyAnimeList = animeList.filter((anime) => anime.content_type !== "MOVIE")
-  const animeNames = [...new Set(onlyAnimeList.map((anime) => anime.anime_name).filter(Boolean))]
   const navigate = useNavigate();
-  const [newAnimeName, setNewAnimeName] = useState("");
+  const [newMovieName, setNewMovieName] = useState("");
 
   useEffect(() => {
   const token = localStorage.getItem("token");
@@ -24,26 +22,28 @@ function App() {
     });
 }, []);
 
+const movieNames = [...new Set(animeList.filter(a => a.content_type == "MOVIE").map((movie) => movie.anime_name).filter(Boolean))]
+
   return (
   <Layout>
-    <h1>Anime Recorder</h1>
+    <h1>Movies</h1>
 
     <div style={{ display: "flex", gap: "8px", marginBottom: "16px" }}>
-        <label style={{ color: "black" }}>アニメ名</label>
-        <input value={newAnimeName} onChange={(e) => setNewAnimeName(e.target.value)} placeholder="Anime_name" style={{ width: "80px" }}/>
+        <label style={{ color: "black" }}>Movie names</label>
+        <input value={newMovieName} onChange={(e) => setNewMovieName(e.target.value)} placeholder="Movie_name" style={{ width: "80px" }}/>
       </div>
     
     <button onClick={() => {
-    if (newAnimeName.trim()) {
-      navigate(`/anime/${newAnimeName}`);
-      setNewAnimeName("");
+    if (newMovieName.trim()) {
+      navigate(`/movie/${newMovieName}`);
+      setNewMovieName("");
     }
   }}>Add</button>
 
 
     <div style={{ display: "flex", flexDirection: "column", gap: "16px", padding: "24px" }}>
-      {animeNames.map((name) => (
-        <button key={name} onClick={() => navigate(`/anime/${name}`)} style={{ padding: "20px", fontSize: "18px", borderRadius: "8px" }}>
+      {movieNames.map((name) => (
+        <button key={name} onClick={() => navigate(`/movie/${name}`)} style={{ padding: "20px", fontSize: "18px", borderRadius: "8px" }}>
           {name}
         </button>
       ))}
@@ -52,4 +52,4 @@ function App() {
 )
 }
 
-export default App;
+export default MovieHome;

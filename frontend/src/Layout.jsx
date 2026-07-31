@@ -5,6 +5,7 @@ export default function Layout({ children }) {
 
   function handleLogout() {
     localStorage.removeItem("token");
+    localStorage.removeItem("refresh_token");
     navigate("/login");
   }
 
@@ -38,8 +39,6 @@ export default function Layout({ children }) {
       
         <nav style={{ alignSelf: "stretch", display: "flex", justifyContent: "space-around", padding: 16, gap: 16, backgroundColor: "#4E342E", color: "white", position: "sticky", bottom: 0 }}>
         <Link to="/" style={{ color: "white" }}>Tracker</Link>
-        <Link to="/summary" style={{ color: "white" }}>Summary</Link>
-        <Link to="/categories" style={{ color: "white" }}>Categories</Link>
         <Link to="/movie" style={{ color: "white" }}>Movie</Link>
         <Link to="/profile" style={{ color: "white" }}>Profile</Link>
       </nav>
