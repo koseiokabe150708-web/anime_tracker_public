@@ -113,7 +113,7 @@ function AnimePage() {
       setError("タイトルを入力してください");
       return;
     }
-    if (!episodeNumber || episodeNumber <= 0) {
+    if (episodeNumber <= 0) {
       setError("話数を入力してください")
       return;
     }

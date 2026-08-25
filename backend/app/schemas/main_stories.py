@@ -4,7 +4,7 @@ from datetime import date
 class AnimeCreate(BaseModel):
     title: str
     anime_name: str | None = None
-    episode_number: int
+    episode_number: int| None = None
     season_number: int | None = None
     runtime: int | None = None
     anime_date: date

@@ -61,11 +61,11 @@ async function handleDeleteEpisodeCharacter(episode_character_id) {
 
   return (
   <div style={{ border: "2px solid #004583", backgroundColor: "#004583", padding: "10px", color: "white", margin: "10px", borderRadius: "8px", width: "250px" }}>
-    <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2>
+    {anime.episode_number ? <h2>{anime.content_type === "ANIME_SHOW" ? `${anime.episode_number} ${anime.alphabet}` : `${anime.content_type} ${anime.episode_number} ${anime.alphabet}`}</h2> : null}
     <p>タイトル：{anime.title}</p>
     <p>日付：{anime.anime_date}</p>
-    <p>脚本：{anime.script_writer}</p>
-    <p>作画監督：{anime.anime_director}</p>
+    {anime.script_writer && <p> 脚本：{anime.script_writer}</p>}
+    {anime.anime_director && <p> 作画監督：{anime.anime_director}</p>}
     <p>評価：{anime.rating}</p>
     <p>視聴状況：{anime.watch_status}</p>
     

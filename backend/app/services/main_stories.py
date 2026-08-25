@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.schemas.main_stories import AnimeCreate
 
 def get_anime(db, user_id: int):
-    rows = db.execute(text("SELECT * FROM anime_tracker WHERE user_id = :user_id ORDER BY anime_date"), {"user_id": user_id}).fetchall()
+    rows = db.execute(text("SELECT * FROM anime_tracker WHERE user_id = :user_id ORDER BY anime_date, alphabet"), {"user_id": user_id}).fetchall()
     return [dict(row._mapping) for row in rows]
 
 def add_anime(payload: AnimeCreate, db, user_id: int):
